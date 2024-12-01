@@ -1,0 +1,35 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main # Ejecuta este flujo de trabajo cuando se haga un push en la rama main
+      - dev
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Clonar el repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Iniciar sesión en GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: olmedokenpo
+          password: ${{ secrets.EXAMPLE_TOKEN }}
+
+      # Paso 3: Construir y etiquetar la imagen Docker
+      - name: Build and tag Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/flask-app-ia:latest .
+          docker push ghcr.io/${{ github.repository_owner }}/flask-app-ia:latest
+
+
+          
